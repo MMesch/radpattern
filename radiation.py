@@ -4,17 +4,19 @@ Simple script that plots the P and S wave radiation pattern
 of an arbitrary moment tensor in 3D
 
 UNTESTED
+Matthias Meschede 2015
 """
 
 import numpy as np
-#import matplotlib.pyplot as plt
 from obspy.imaging.scripts.mopad import MomentTensor, BeachBall
-#from mpl_toolkits.mplot3d import Axes3D
 from mayavi import mlab
 
+#import matplotlib.pyplot as plt
+#from mpl_toolkits.mplot3d import Axes3D
+
 def main():
-    mt = [7.9823,-0.154, -7.574, 0.548, 7.147, -0.211] #focal mechanism
-    #mt = [1.,1.,1., 0., 0., 0.] #focal mechanism
+    mt = [7.982,-0.154, -7.574, 0.548, 7.147, -0.211] #focal mechanism
+    #mt = [0.,0.,0, 0., 0., 0.] #focal mechanism
 
     mopad_mt = MomentTensor(mt,system='NED')
     bb = BeachBall(mopad_mt, npoints=200)
@@ -27,21 +29,24 @@ def main():
     #plot radiation pattern and nodal lines
     pointsp,dispp = farfieldP(mt)
     pointss,disps = farfieldS(mt)
+
     npointsp = pointsp.shape[1]
     normp = np.sum(pointsp*dispp,axis=0)
     norms = np.sum(pointss*disps,axis=0)
+    rangep = np.max(np.abs(normp))
+    ranges = np.max(np.abs(normp))
 
-    colors = np.random.uniform(size=npointsp)
-
-    fig1 = mlab.figure()
-    pts1 = mlab.quiver3d(pointsp[0],pointsp[1],pointsp[2],dispp[0],dispp[1],dispp[2],scalars=normp)
+    fig1 = mlab.figure(size=(800,800))
+    pts1 = mlab.quiver3d(pointsp[0],pointsp[1],pointsp[2],dispp[0],dispp[1],dispp[2],
+                         scalars=normp,vmin=-rangep,vmax=rangep)
     pts1.glyph.color_mode = 'color_by_scalar'
     mlab.plot3d(*neg_nodalline,color=(0,0.5,0),tube_radius=0.01)
     mlab.plot3d(*pos_nodalline,color=(0,0.5,0),tube_radius=0.01)
     plot_sphere(0.7)
 
-    fig2 = mlab.figure()
-    mlab.quiver3d(pointss[0],pointss[1],pointss[2],disps[0],disps[1],disps[2])
+    fig2 = mlab.figure(size=(800,800))
+    mlab.quiver3d(pointss[0],pointss[1],pointss[2],disps[0],disps[1],disps[2],
+                  vmin=-ranges,vmax=ranges)
     mlab.plot3d(*neg_nodalline,color=(0,0.5,0),tube_radius=0.01)
     mlab.plot3d(*pos_nodalline,color=(0,0.5,0),tube_radius=0.01)
     plot_sphere(0.7)
