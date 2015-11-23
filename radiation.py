@@ -36,7 +36,7 @@ def main():
     rangep = np.max(np.abs(normp))
     ranges = np.max(np.abs(normp))
 
-    fig1 = mlab.figure(size=(800,800))
+    fig1 = mlab.figure(size=(800,800),bgcolor=(0,0,0))
     pts1 = mlab.quiver3d(pointsp[0],pointsp[1],pointsp[2],dispp[0],dispp[1],dispp[2],
                          scalars=normp,vmin=-rangep,vmax=rangep)
     pts1.glyph.color_mode = 'color_by_scalar'
@@ -44,7 +44,7 @@ def main():
     mlab.plot3d(*pos_nodalline,color=(0,0.5,0),tube_radius=0.01)
     plot_sphere(0.7)
 
-    fig2 = mlab.figure(size=(800,800))
+    fig2 = mlab.figure(size=(800,800),bgcolor=(0,0,0))
     mlab.quiver3d(pointss[0],pointss[1],pointss[2],disps[0],disps[1],disps[2],
                   vmin=-ranges,vmax=ranges)
     mlab.plot3d(*neg_nodalline,color=(0,0.5,0),tube_radius=0.01)
